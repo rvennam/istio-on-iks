@@ -1,4 +1,4 @@
-End to end encryption with Istio Ingress Gateway on IKS
+# End to end encryption with Istio Ingress Gateway on IKS
 
 There are a couple of different methods of exposing your Istio Ingress Gateway for external users. On this page, I'll cover the approach of securely connecting the NLB provided by the IBM Cloud Kubernetes Service directly to the Istio Ingress Gateway, skipping the Ingress application load balancer (ALB) provided by IKS. 
 
