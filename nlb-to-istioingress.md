@@ -1,4 +1,4 @@
-# End to end encryption with Istio Ingress Gateway on IKS
+# End-to-end encryption of ingress traffic with Istio Ingress Gateway on IKS
 
 There are a couple of different methods of exposing your Istio Ingress Gateway for external users. On this page, I'll cover the approach of securely connecting the NLB provided by the IBM Cloud Kubernetes Service directly to the Istio Ingress Gateway, skipping the Ingress application load balancer (ALB) provided by IKS. 
 
@@ -6,7 +6,7 @@ There are a couple of different methods of exposing your Istio Ingress Gateway f
 
 ## Overview
 1. The Network Load Balancer NLB serves as the external entry point for incoming requests for the app using one of the portable public IP addresses. The Istio Ingress Gateway service is already exposed as a LoadBalancer service.
-2. Create a DNS host name `ibmcloud ks nlb-dns-create` for the Istio Ingress Gateway NLB IP. IKS will register the host name, creates TLS certs and stores them as a secret in the default namespace.
+2. Create a DNS host name `ibmcloud ks nlb-dns-create` for the Istio Ingress Gateway NLB IP. IKS registers the host name, creates TLS certificates and stores them as a secret in the default namespace.
 3. Copy the TLS cert secret from the default namespace to the istio-system namespace and name it istio-ingressgateway-certs. Istio Ingress Gateway will use these certs to perform TLS termination. 
 4. Enable Istio mesh wide encryption to achieve mTLS inside the cluster. The cert management is handled by Istio.
 
@@ -29,7 +29,7 @@ There are a couple of different methods of exposing your Istio Ingress Gateway f
     ```
     ibmcloud ks nlb-dns-create --cluster <YOUR_CLUSTER-NAME> --ip $INGRESS_IP
     ```
-2. Confirm it's working by going to your BookInfo in your browser. (https will not work yet) `http://<host_name>/productpage`
+2. Confirm it's working by accessing your BookInfo application in your browser. (HTTPS will not work yet) `http://<host_name>/productpage`
 
 ### Configure Istio Ingress Gateway for TLS termination
 1. List the NLB host names for your cluster and get the secret name for the host you created in the previous step. Look for the `SSL Cert Secret Name` field.
@@ -81,7 +81,7 @@ There are a couple of different methods of exposing your Istio Ingress Gateway f
         - "*"
     EOF
     ```
-    1. Confirm SSL is working by going to your BookInfo in your browser. (HTTPS this time!) `https://<host_name>/productpage`
+    1. Confirm TLS is working by accessing your BookInfo application in your browser. (HTTPS this time!) `https://<host_name>/productpage`
 
 ### Enable mTLS for in-cluster traffic
 1. Set a mesh-wide authentication policy. This configures the receiving side to use mutual TLS:
@@ -113,4 +113,4 @@ There are a couple of different methods of exposing your Istio Ingress Gateway f
     ```
 
 
-    That's it! All traffic in your cluster is now encrypted. 
+    That's it! The end-to-end traffic from an external client to your services in the cluster is encrypted.
