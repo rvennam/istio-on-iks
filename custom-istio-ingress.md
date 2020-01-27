@@ -80,7 +80,7 @@ spec:
     components:
        ingressGateway:
          enabled: true
-         namespace: bookinfo
+         namespace: bookinfo # <-- Specify the namespace where the ingress gateway deployment should go
        egressGateway:
          enabled: false
   values:
