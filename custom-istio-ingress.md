@@ -131,3 +131,7 @@ If you look the `Gateway` resource, you will find the istio controller selector:
 Both the `istio-ingressgateway` deployments in `istio-system` and `bookinfo` namespaces share the same name. The Gateway resource will use the ingressgateway in the SAME namespace (`bookinfo`) instead of the global one namespace (`istio-system`).
 
 ![](images/istioingress-custom.png)
+
+## Enabling Ingress Gateway SDS
+
+## Creating an Ingress Gateway per zone for HA
