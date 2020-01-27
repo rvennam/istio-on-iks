@@ -112,3 +112,18 @@ service/istio-ingressgateway   LoadBalancer   172.21.169.93   52.117.68.220   15
 ```
 6. Deploy the bookinfo sample.
 ```
+kubectl apply -n bookinfo -f ./samples/bookinfo/platform/kube/bookinfo.yaml
+kubectl apply -n bookinfo -f ./samples/bookinfo/networking/bookinfo-gateway.yaml
+```
+7. Get the EXTERNAL-IP of the `istio-ingressgateway` service in the `bookinfo` namespace
+```
+kubectl get svc -n bookinfo
+```
+8. Visit http://EXTERNAL-IP/productpage
+
+If you look the `Gateway` resource, you will find the istio controller selector:
+```
+  selector:
+    istio: ingressgateway
+```
+Both the `istio-ingressgateway` deployments in `istio-system` and `bookinfo` namespaces share the same name. The Gateway resource will use the ingressgateway in the SAME namespace (`bookinfo`) instead of the global one namespace (`istio-system`).
