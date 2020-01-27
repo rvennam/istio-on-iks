@@ -42,6 +42,8 @@ spec:
 ```
 This means, all traffic coming into the mesh will flow thru this `istio-ingressgateway` deployment. 
 
+![](images/istioingress-default.png)
+
 For the following reasons, some users choose to create additional ingress gateway deployments. 
 1. Separate traffic flows between certain workloads or namespaces
 2. Modify Ingress Gateway with customizations such as SDS.
@@ -127,3 +129,5 @@ If you look the `Gateway` resource, you will find the istio controller selector:
     istio: ingressgateway
 ```
 Both the `istio-ingressgateway` deployments in `istio-system` and `bookinfo` namespaces share the same name. The Gateway resource will use the ingressgateway in the SAME namespace (`bookinfo`) instead of the global one namespace (`istio-system`).
+
+![](images/istioingress-custom.png)
