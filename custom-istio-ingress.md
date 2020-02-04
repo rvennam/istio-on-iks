@@ -44,10 +44,12 @@ This means, all traffic coming into the mesh will flow thru this `istio-ingressg
 
 ![](images/istioingress-default.png)
 
+### Additional Gateways
+
 For the following reasons, some users choose to create additional ingress gateway deployments. 
 1. Separate traffic flows between certain workloads or namespaces
 2. Modify Ingress Gateway with customizations such as SDS.
-3. 
+3. Create an Ingress Gateway for private NLB traffic
 
 
 ## Instructions
