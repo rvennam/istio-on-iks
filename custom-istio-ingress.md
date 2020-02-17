@@ -158,7 +158,7 @@ spec:
     components:
        ingressGateway:
          enabled: true
-         namespace: bookinfo
+         namespace: bookinfo <-- Specify where you want the gateway
        egressGateway:
          enabled: false
   values:
@@ -168,4 +168,8 @@ spec:
       istio-ingressgateway:
         serviceAnnotations:
           service.kubernetes.io/ibm-load-balancer-cloud-provider-zone: "dal12"  <-- Specify zone affinity
+```
+4. Apply the above resource:
+```
+istioctl manifest apply -f customingress.yaml
 ```
