@@ -158,7 +158,7 @@ spec:
     components:
        ingressGateway:
          enabled: true
-         namespace: bookinfo <-- Specify where you want the gateway
+         namespace: bookinfo # <-- Specify where you want the gateway
        egressGateway:
          enabled: false
   values:
@@ -168,6 +168,44 @@ spec:
       istio-ingressgateway:
         serviceAnnotations:
           service.kubernetes.io/ibm-load-balancer-cloud-provider-zone: "dal12"  <-- Specify zone affinity
+```
+4. Apply the above resource:
+```
+istioctl manifest apply -f customingress.yaml
+```
+
+## Creating an Ingress Gateway with private IP
+
+```
+apiVersion: install.istio.io/v1alpha2
+kind: IstioControlPlane
+spec:
+  trafficManagement:
+    enabled: false
+  policy:
+    enabled: false
+  telemetry:
+    enabled: false
+  security:
+    enabled: false
+  configManagement:
+    enabled: false
+  autoInjection:
+    enabled: false
+  gateways:
+    components:
+       ingressGateway:
+         enabled: true
+         namespace: bookinfo # <-- Specify where you want the gateway
+       egressGateway:
+         enabled: false
+  values:
+    prometheus:
+      enabled: false
+    gateways:
+      istio-ingressgateway:
+        serviceAnnotations:
+          service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: private
 ```
 4. Apply the above resource:
 ```
