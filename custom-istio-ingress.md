@@ -1,5 +1,7 @@
 # Deploying your own Istio Ingress Gateway
 
+### NOTE: Istio 1.4 ONLY! These instructions will not work for 1.5
+
 Managed Istio on IKS comes with a `istio-ingressgateway` deployment in the `istio-system` namespace which you can use for routing traffic coming in to your mesh. 
 ```
 ~ 🏎  $ kubectl get deploy -n istio-system
@@ -91,6 +93,7 @@ spec:
 ```
 4. Apply the above resource:
 ```
+istioctl version # confirm 1.4 client and control plane
 istioctl manifest apply -f customingress.yaml
 ```
 You should see:
@@ -171,6 +174,7 @@ spec:
 ```
 4. Apply the above resource:
 ```
+istioctl version # confirm 1.4 client and control plane
 istioctl manifest apply -f customingress.yaml
 ```
 
@@ -209,5 +213,6 @@ spec:
 ```
 4. Apply the above resource:
 ```
+istioctl version # confirm 1.4 client and control plane
 istioctl manifest apply -f customingress.yaml
 ```
