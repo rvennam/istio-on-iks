@@ -155,9 +155,7 @@ kubectl get svc -n bookinfo
 
 ## Creating an Ingress Gateway per zone for HA
 
-Replace the `helm template` command in the instructions above with the following:
-
-1. Run the following command from the istio folder to generate the new ingress Deployment, Service and ServiceAccount
+Replace the `helm template` command in the [instructions](#instructions) above with the following:
 ```
 helm template install/kubernetes/helm/istio/ \
   --namespace bookinfo \
@@ -175,6 +173,7 @@ helm template install/kubernetes/helm/istio/ \
 
 ## Creating an Ingress Gateway with private IP
 
+Replace the `helm template` command in the [instructions](#instructions) above with the following:
 ```
 helm template install/kubernetes/helm/istio/ \
   --namespace bookinfo \
