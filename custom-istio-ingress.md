@@ -57,58 +57,33 @@ For the following reasons, some users choose to create additional ingress gatewa
 ## Instructions
 These steps will create a new Istio ingress gateway deployment in a `bookinfo` namespace and then deploy the BookInfo sample application to the same namespace.
 
-1. Download the Istio release and add `istioctl` to your PATH https://istio.io/docs/setup/getting-started/#download
+1. Download the Istio 1.4 release and add `istioctl` to your PATH https://istio.io/docs/setup/getting-started/#download
 2. Create a new namespace and enable automatic sidecar injection
 ```
 kubectl create namespace bookinfo
 kubectl label namespace bookinfo  istio-injection=enabled
 ```
-3. Create a file called `customingress.yaml` with contents:
+3. Run the following command from the istio folder to generate the new ingress Deployment, Service and ServiceAccount
 ```
-apiVersion: install.istio.io/v1alpha2
-kind: IstioControlPlane
-spec:
-  trafficManagement:
-    enabled: false
-  policy:
-    enabled: false
-  telemetry:
-    enabled: false
-  security:
-    enabled: false
-  configManagement:
-    enabled: false
-  autoInjection:
-    enabled: false
-  gateways:
-    components:
-       ingressGateway:
-         enabled: true
-         namespace: bookinfo # <-- Specify the namespace where the ingress gateway deployment should go
-       egressGateway:
-         enabled: false
-  values:
-    prometheus:
-      enabled: false
+helm template install/kubernetes/helm/istio/ \
+  --namespace bookinfo \
+  --set global.istioNamespace=istio-system \
+  -x charts/gateways/templates/deployment.yaml \
+  -x charts/gateways/templates/service.yaml  \
+  -x charts/gateways/templates/serviceaccount.yaml \
+  --set gateways.istio-ingressgateway.enabled=true \
+  --set gateways.istio-egressgateway.enabled=false \
+  --set gateways.istio-ingressgateway.labels.app=custom-istio-ingressgateway \
+  --set gateways.istio-ingressgateway.labels.istio=custom-ingressgateway \
+  > customingress.yaml
 ```
 4. Apply the above resource:
 ```
-istioctl version # confirm 1.4 client and control plane
-istioctl manifest apply -f customingress.yaml
-```
-You should see:
-```
-- Applying manifest for component Base...
-✔ Finished applying manifest for component Base.
-- Applying manifest for component IngressGateway...
-✔ Finished applying manifest for component IngressGateway.
-
-
-✔ Installation complete
+kubectl apply -f customingress.yaml
 ```
 5. Check the deployments and services in `bookinfo` namespace. 
 ```
-k get deploy -n bookinfo
+kubectl get deploy,svc -n bookinfo
 ```
 ```
 NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
@@ -120,7 +95,54 @@ service/istio-ingressgateway   LoadBalancer   172.21.169.93   52.117.68.220   15
 6. Deploy the bookinfo sample.
 ```
 kubectl apply -n bookinfo -f ./samples/bookinfo/platform/kube/bookinfo.yaml
-kubectl apply -n bookinfo -f ./samples/bookinfo/networking/bookinfo-gateway.yaml
+```
+7. Deploy Gateway and Virtual Service. Create a file called `bookinfo-custom-gateway.yaml` with contents:
+```
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: bookinfo-gateway
+spec:
+  selector:
+    istio: custom-ingressgateway # use the CUSTOM istio controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: bookinfo
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - bookinfo-gateway
+  http:
+  - match:
+    - uri:
+        exact: /productpage
+    - uri:
+        prefix: /static
+    - uri:
+        exact: /login
+    - uri:
+        exact: /logout
+    - uri:
+        prefix: /api/v1/products
+    route:
+    - destination:
+        host: productpage
+        port:
+          number: 9080
+```
+8. Apply the file
+```
+kubectl apply -f bookinfo-custom-gateway.yaml -n bookinfo
 ```
 7. Get the EXTERNAL-IP of the `istio-ingressgateway` service in the `bookinfo` namespace
 ```
@@ -128,91 +150,42 @@ kubectl get svc -n bookinfo
 ```
 8. Visit http://EXTERNAL-IP/productpage
 
-If you look the `Gateway` resource, you will find the istio controller selector:
-```
-  selector:
-    istio: ingressgateway
-```
-Both the `istio-ingressgateway` deployments in `istio-system` and `bookinfo` namespaces share the same name. The Gateway resource will use the ingressgateway in the SAME namespace (`bookinfo`) instead of the global one namespace (`istio-system`).
-
 ![](images/istioingress-custom.png)
 
-## Enabling Ingress Gateway SDS
 
 ## Creating an Ingress Gateway per zone for HA
 
+Replace the `helm template` command in the instructions above with the following:
+
+1. Run the following command from the istio folder to generate the new ingress Deployment, Service and ServiceAccount
 ```
-apiVersion: install.istio.io/v1alpha2
-kind: IstioControlPlane
-spec:
-  trafficManagement:
-    enabled: false
-  policy:
-    enabled: false
-  telemetry:
-    enabled: false
-  security:
-    enabled: false
-  configManagement:
-    enabled: false
-  autoInjection:
-    enabled: false
-  gateways:
-    components:
-       ingressGateway:
-         enabled: true
-         namespace: bookinfo # <-- Specify where you want the gateway
-       egressGateway:
-         enabled: false
-  values:
-    prometheus:
-      enabled: false
-    gateways:
-      istio-ingressgateway:
-        serviceAnnotations:
-          service.kubernetes.io/ibm-load-balancer-cloud-provider-zone: "dal12"  <-- Specify zone affinity
-```
-4. Apply the above resource:
-```
-istioctl version # confirm 1.4 client and control plane
-istioctl manifest apply -f customingress.yaml
+helm template install/kubernetes/helm/istio/ \
+  --namespace bookinfo \
+  --set global.istioNamespace=istio-system \
+  -x charts/gateways/templates/deployment.yaml \
+  -x charts/gateways/templates/service.yaml  \
+  -x charts/gateways/templates/serviceaccount.yaml \
+  --set gateways.istio-ingressgateway.enabled=true \
+  --set gateways.istio-egressgateway.enabled=false \
+  --set gateways.istio-ingressgateway.labels.app=custom-istio-ingressgateway \
+  --set gateways.istio-ingressgateway.labels.istio=custom-ingressgateway \
+  --set gateways.istio-ingressgateway.serviceAnnotations.'service\.kubernetes\.io/ibm-load-balancer-cloud-provider-zone'=dal12 \
+  > customingress.yaml
 ```
 
 ## Creating an Ingress Gateway with private IP
 
 ```
-apiVersion: install.istio.io/v1alpha2
-kind: IstioControlPlane
-spec:
-  trafficManagement:
-    enabled: false
-  policy:
-    enabled: false
-  telemetry:
-    enabled: false
-  security:
-    enabled: false
-  configManagement:
-    enabled: false
-  autoInjection:
-    enabled: false
-  gateways:
-    components:
-       ingressGateway:
-         enabled: true
-         namespace: bookinfo # <-- Specify where you want the gateway
-       egressGateway:
-         enabled: false
-  values:
-    prometheus:
-      enabled: false
-    gateways:
-      istio-ingressgateway:
-        serviceAnnotations:
-          service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: private
-```
-4. Apply the above resource:
-```
-istioctl version # confirm 1.4 client and control plane
-istioctl manifest apply -f customingress.yaml
+helm template install/kubernetes/helm/istio/ \
+  --namespace bookinfo \
+  --set global.istioNamespace=istio-system \
+  -x charts/gateways/templates/deployment.yaml \
+  -x charts/gateways/templates/service.yaml  \
+  -x charts/gateways/templates/serviceaccount.yaml \
+  --set gateways.istio-ingressgateway.enabled=true \
+  --set gateways.istio-egressgateway.enabled=false \
+  --set gateways.istio-ingressgateway.labels.app=custom-istio-ingressgateway \
+  --set gateways.istio-ingressgateway.labels.istio=custom-ingressgateway \
+  --set gateways.istio-ingressgateway.serviceAnnotations.'service\.kubernetes\.io/ibm-load-balancer-cloud-provider-ip-type'=private \
+  > customingress.yaml
 ```
