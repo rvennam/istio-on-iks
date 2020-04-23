@@ -59,28 +59,26 @@ There are a couple of different methods of exposing your Istio Ingress Gateway f
    kubectl delete gateway bookinfo-gateway
    ```
 2. Apply this gateway which is configured for https and tls
-   ```
-   kubectl apply -f - <<EOF
-    apiVersion: networking.istio.io/v1alpha3
-    kind: Gateway
-    metadata:
-    name: bookinfo-gateway
-    spec:
-    selector:
-        istio: ingressgateway # use istio default ingress gateway
-    servers:
-    - port:
-        number: 443
-        name: https
-        protocol: HTTPS
-        tls:
-        mode: SIMPLE
-        serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
-        privateKey: /etc/istio/ingressgateway-certs/tls.key
-        hosts:
-        - "*"
-    EOF
-    ```
+```
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: bookinfo-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default ingress gateway
+  servers:
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
+      privateKey: /etc/istio/ingressgateway-certs/tls.key
+    hosts:
+    - "*"
+```
     1. Confirm TLS is working by accessing your BookInfo application in your browser. (HTTPS this time!) `https://<host_name>/productpage`
 
 ### Enable mTLS for in-cluster traffic
