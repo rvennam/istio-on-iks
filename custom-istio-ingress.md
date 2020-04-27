@@ -155,7 +155,9 @@ kubectl get svc -n bookinfo
 
 ## Creating an Ingress Gateway per zone for HA
 
-Replace the `helm template` command in the [instructions](#instructions) above with the following:
+
+
+Replace the `helm template` command in the [instructions](#instructions) above with the following (replace `dal12` with your zone):
 ```
 helm template install/kubernetes/helm/istio/ \
   --namespace bookinfo \
