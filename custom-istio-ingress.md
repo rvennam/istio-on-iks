@@ -78,7 +78,7 @@ helm template install/kubernetes/helm/istio/ \
   --set gateways.istio-ingressgateway.labels.istio=custom-ingressgateway \
   > customingress.yaml
 ```
-4. Take a look at the generated customingress.yaml and apply it:
+4. Take a look at the generated customingress.yaml and apply it
 ```
 kubectl apply -f customingress.yaml
 ```
