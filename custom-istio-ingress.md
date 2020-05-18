@@ -52,6 +52,7 @@ For the following reasons, some users choose to create additional ingress gatewa
 1. Separate traffic flows between certain workloads or namespaces
 2. Modify Ingress Gateway with customizations such as SDS.
 3. Create an Ingress Gateway for private NLB traffic
+4. Have an Ingress Gateway per zone for HA
 
 
 ## Instructions
@@ -77,11 +78,11 @@ helm template install/kubernetes/helm/istio/ \
   --set gateways.istio-ingressgateway.labels.istio=custom-ingressgateway \
   > customingress.yaml
 ```
-4. Apply the above resource:
+4. Take a look at the generated customingress.yaml and apply it:
 ```
 kubectl apply -f customingress.yaml
 ```
-5. Check the deployments and services in `bookinfo` namespace. 
+5. Check the deployments and services in `bookinfo` namespace. You should see the new gateway deployed. 
 ```
 kubectl get deploy,svc -n bookinfo
 ```
@@ -104,7 +105,7 @@ metadata:
   name: bookinfo-gateway
 spec:
   selector:
-    istio: custom-ingressgateway # use the CUSTOM istio controller
+    istio: custom-ingressgateway ### use the new gateway you just created
   servers:
   - port:
       number: 80
@@ -156,8 +157,7 @@ kubectl get svc -n bookinfo
 ## Creating an Ingress Gateway per zone for HA
 
 
-
-Replace the `helm template` command in the [instructions](#instructions) above with the following (replace `dal12` with your zone):
+Replace the `helm template` command in the [instructions](#instructions) above with the following (replace `dal12` with your desired zone):
 ```
 helm template install/kubernetes/helm/istio/ \
   --namespace bookinfo \
