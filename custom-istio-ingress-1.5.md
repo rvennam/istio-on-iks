@@ -67,6 +67,8 @@ spec:
   components:
     ingressGateways:
       - name: custom-ingressgateway
+        label: 
+          istio: custom-ingressgateway
         namespace: bookinfo
         enabled: true
 ```
