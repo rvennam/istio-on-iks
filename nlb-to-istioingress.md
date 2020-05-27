@@ -79,7 +79,8 @@ spec:
     hosts:
     - "*"
 ```
-    1. Confirm TLS is working by accessing your BookInfo application in your browser. (HTTPS this time!) `https://<host_name>/productpage`
+
+1. Confirm TLS is working by accessing your BookInfo application in your browser. (**HTTPS** this time!) `https://<host_name>/productpage`
 
 ### Enable mTLS for in-cluster traffic
 1. Set a mesh-wide authentication policy. This configures the receiving side to use mutual TLS:
