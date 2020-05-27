@@ -27,7 +27,7 @@ There are a couple of different methods of exposing your Istio Ingress Gateway f
 ### Create a host name for Istio Ingress IP
 1.  Use the nlb-dns-create command to create a DNS host name to register the NLB IP of the Istio Ingress Gateway service
     ```
-    ibmcloud ks nlb-dns-create --cluster <YOUR_CLUSTER-NAME> --ip $INGRESS_IP
+    ibmcloud ks nlb-dns create classic --cluster <YOUR_CLUSTER-NAME> --ip $INGRESS_IP
     ```
 2. Confirm it's working by accessing your BookInfo application in your browser. (HTTPS will not work yet) `http://<host_name>/productpage`
 
