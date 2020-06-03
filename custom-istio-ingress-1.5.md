@@ -177,7 +177,11 @@ spec:
 
 ## Creating an Ingress Gateway with private IP
 
-Use the following spec for `custom-ingress-io.yaml` in the [instructions](#instructions) with the following:
+VLAN provides subnets that are used to assign IP addresses to your worker nodes and public app services. By default, standard IKS clusters are connected to both [public and private VLANs](https://cloud.ibm.com/docs/containers?topic=containers-subnets#basics_vlans). The default Istio ingressgateway service will be assigned a public IP from the public VLAN.
+
+Note: If you configure the worker nodes to only be connected to [private VLANs only](https://cloud.ibm.com/docs/containers?topic=containers-clusters), a private IP from the private VLAN is automatically created for default istio ingress gateway. 
+
+To create a new Istio ingress gateway and specify a private LoadBalancer, use the following spec for `custom-ingress-io.yaml` in the [instructions](#instructions):
 
 ```
 apiVersion: install.istio.io/v1alpha1
