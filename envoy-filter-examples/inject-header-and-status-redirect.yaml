@@ -1,0 +1,62 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: envoy-filter
+  namespace: istio-system
+spec:
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        filterChain:
+          filter:
+            name: "envoy.http_connection_manager"
+    patch:
+      operation: INSERT_BEFORE
+      value: # lua filter specification
+        name: envoy.lua
+        config:
+          inlineCode: |
+            function encodeChar(chr)
+              return string.format("%%%X",string.byte(chr))
+            end
+
+            function encodeString(str)
+              local output, t = string.gsub(str,"[^%w]",encodeChar)
+              return output
+            end
+
+            function envoy_on_request(request_handle)
+              headers = request_handle:headers()
+              streamInfo = request_handle:streamInfo()
+              dynamicMetadata = streamInfo:dynamicMetadata()
+              dynamicMetadata:set("request_headers", "request_authority", headers:get(":authority"))
+              dynamicMetadata:set("request_headers", "request_path", headers:get(":path"))
+              dynamicMetadata:set("request_headers", "accept", headers:get("Accept"))
+              if headers:get("x-proxy-outer-url") ~= nil then
+                dynamicMetadata:set("request_headers", "x_proxy_outer", headers:get("x-proxy-outer-url"))
+              end
+              if not request_handle:headers():get("X-Proxy-From") then
+                request_handle:headers():add("X-Proxy-From", "https://"..headers:get(":authority")..headers:get(":path") );
+              end
+              if not request_handle:headers():get("my-header") then
+                request_handle:headers():add("my-header", "v6" );
+              end
+            end
+
+            function envoy_on_response(response_handle)
+              headers = response_handle:headers()
+              streamInfo = response_handle:streamInfo()
+              dynamicMetadata = streamInfo:dynamicMetadata()
+              requestData = dynamicMetadata:get("request_headers")
+              if headers:get(":status") == "401" and requestData["accept"] ~= nil and string.find(string.lower(requestData["accept"]), "application/json") == nil then
+                if requestData["x_proxy_outer"] ~= nil then
+                    redirect_url = requestData["x_proxy_outer"].."/login?redirect="..encodeString(requestData["request_path"])
+                else
+                    redirect_url = "https://"..requestData["request_authority"].."/login?redirect="..encodeString(requestData["request_path"])
+                end
+                headers:replace("location", redirect_url)
+                headers:replace(":status", "302")
+              end
+            end
