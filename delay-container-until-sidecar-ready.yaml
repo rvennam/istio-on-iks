@@ -1,0 +1,16 @@
+# author: ceastman
+istioWaitCommandNpm:
+  command:
+    - sh
+    - -c
+    - |
+     #!/usr/bin/env bash -e
+     x=0
+     date
+     until $(curl --head --silent --output /dev/null http://127.0.0.1:15021/healthz/ready); do
+       x=$((x+1))
+       sleep 1
+     done
+     echo "Took $x seconds for sidecar to be ready."
+     date
+     npm start # will need to change based upon what the docker container needs to start with.
