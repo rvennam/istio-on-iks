@@ -1,4 +1,5 @@
 # author: ceastman
+# Add this to your deployment yaml
 istioWaitCommandNpm:
   command:
     - sh
