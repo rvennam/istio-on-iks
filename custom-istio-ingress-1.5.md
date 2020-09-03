@@ -1,6 +1,6 @@
 # Deploying your own Istio Ingress Gateway
 
-### NOTE: Istio 1.5 and 1.6 only
+### NOTE: Istio 1.5, 1.6 and 1.7 only
 
 Managed Istio on IKS comes with a `istio-ingressgateway` deployment in the `istio-system` namespace which you can use for routing traffic coming in to your mesh. 
 ```
@@ -51,7 +51,7 @@ For the following reasons, some users choose to create additional ingress gatewa
 ## Instructions
 These steps will create a new Istio ingress gateway deployment in a `bookinfo` namespace and then deploy the BookInfo sample application to the same namespace.
 
-1. Download the Istio 1.5/1.6 release and add `istioctl` to your PATH https://istio.io/docs/setup/getting-started/#download
+1. Download the Istio release and add `istioctl` to your PATH https://istio.io/docs/setup/getting-started/#download
 2. Create a new namespace and enable automatic sidecar injection
 ```
 kubectl create namespace bookinfo
