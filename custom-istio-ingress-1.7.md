@@ -199,9 +199,13 @@ Note:
 - Do not set the tag to a version newer than the control plane. 
 - Running older version of a Gateway can expose you to security vulnerabilities. 
 
+## Disable the default Ingress Gateway
+
+To disable the default `istio-ingressgateway` Ingress Gateway in the `istio-system` namespace created by Managed Istio, use the `managed-istio-custom` config map to set `istio-ingressgateway-public-1-enabled: false` as documented [here](https://cloud.ibm.com/docs/containers?topic=containers-istio#customize).
+
 ## Clean up
 
 Remove the `IstioOperator` resource
 ```
-kubectl apply -f ./custom-ingress-io.yaml
+kubectl delete -f ./custom-ingress-io.yaml
 ```
