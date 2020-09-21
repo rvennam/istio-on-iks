@@ -51,13 +51,12 @@ For the following reasons, some users choose to create additional ingress gatewa
 These steps will create a new Istio ingress gateway deployment in a `bookinfo` namespace and then deploy the BookInfo sample application to the same namespace.
 
 1. Enable Managed Istio 1.7
-1. Create a new namespace and enable automatic sidecar injection
+2. Create a new namespace and enable automatic sidecar injection
 ```
 kubectl create namespace bookinfo
 kubectl label namespace bookinfo  istio-injection=enabled
 ```
-3. Verify `istioctl version` shows same version for everything
-4. Create a file called `custom-ingress-io.yaml` with contents:
+3. Create a file called `custom-ingress-io.yaml` with contents:
 ```
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
@@ -77,11 +76,11 @@ spec:
         namespace: bookinfo
         enabled: true
 ```
-5. Apply the above `IstioOperator` CR to your cluster. The Managed Istio operator running in the `ibm-operators` namespace will read the resource and install the Gateway Deployment and Service into the `bookinfo` namespace. 
+4. Apply the above `IstioOperator` CR to your cluster. The Managed Istio operator running in the `ibm-operators` namespace will read the resource and install the Gateway Deployment and Service into the `bookinfo` namespace. 
 ```
 kubectl apply -f ./custom-ingress-io.yaml
 ```
-6. Check the deployments and services in `bookinfo` namespace. You should see the new gateway deployed. 
+5. Check the deployments and services in `bookinfo` namespace. You should see the new gateway deployed. 
 ```
 kubectl get deploy,svc -n bookinfo
 ```
@@ -93,11 +92,11 @@ NAME                            TYPE           CLUSTER-IP      EXTERNAL-IP     P
 service/custom-ingressgateway   LoadBalancer   172.21.98.120   52.117.68.222   15020:32656/TCP,80:30576/TCP,443:32689/TCP,15029:31885/TCP,15030:30198/TCP,15031:32637/TCP,15032:30869/TCP,31400:30310/TCP,15443:31698/TCP   4m53s
 
 ```
-7. Deploy the bookinfo sample.
+6. Deploy the bookinfo sample.
 ```
 kubectl apply -n bookinfo -f https://raw.githubusercontent.com/istio/istio/release-1.7/samples/bookinfo/platform/kube/bookinfo.yaml
 ```
-8. Deploy Gateway and Virtual Service. Create a file called `bookinfo-custom-gateway.yaml` with contents:
+7. Deploy Gateway and Virtual Service. Create a file called `bookinfo-custom-gateway.yaml` with contents:
 ```
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
@@ -143,17 +142,17 @@ spec:
 ```
 Note that we are specifying `istio: custom-ingressgateway` in the Gateway.
 
-9. Apply the Gateway and VirtualService resource
+8. Apply the Gateway and VirtualService resource
 ```
 kubectl apply -f bookinfo-custom-gateway.yaml -n bookinfo
 ```
 
-10. Get the EXTERNAL-IP of the `custom-ingressgateway` service in the `bookinfo` namespace
+9. Get the EXTERNAL-IP of the `custom-ingressgateway` service in the `bookinfo` namespace
 ```
 kubectl get svc -n bookinfo
 ```
 
-11. Visit http://EXTERNAL-IP/productpage
+10. Visit http://EXTERNAL-IP/productpage
 
 
 ## Creating an Ingress Gateway with private IP
