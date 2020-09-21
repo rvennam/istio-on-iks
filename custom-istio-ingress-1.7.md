@@ -77,11 +77,11 @@ spec:
         namespace: bookinfo
         enabled: true
 ```
-1. Apply the above `IstioOperator` CR to your cluster. The Managed Istio operator running in the `ibm-operators` namespace will read the resource and install the Gateway Deployment and Service into the `bookinfo` namespace. 
+5. Apply the above `IstioOperator` CR to your cluster. The Managed Istio operator running in the `ibm-operators` namespace will read the resource and install the Gateway Deployment and Service into the `bookinfo` namespace. 
 ```
 kubectl apply -f ./custom-ingress-io.yaml
 ```
-2. Check the deployments and services in `bookinfo` namespace. You should see the new gateway deployed. 
+6. Check the deployments and services in `bookinfo` namespace. You should see the new gateway deployed. 
 ```
 kubectl get deploy,svc -n bookinfo
 ```
@@ -93,11 +93,11 @@ NAME                            TYPE           CLUSTER-IP      EXTERNAL-IP     P
 service/custom-ingressgateway   LoadBalancer   172.21.98.120   52.117.68.222   15020:32656/TCP,80:30576/TCP,443:32689/TCP,15029:31885/TCP,15030:30198/TCP,15031:32637/TCP,15032:30869/TCP,31400:30310/TCP,15443:31698/TCP   4m53s
 
 ```
-6. Deploy the bookinfo sample.
+7. Deploy the bookinfo sample.
 ```
 kubectl apply -n bookinfo -f https://raw.githubusercontent.com/istio/istio/release-1.7/samples/bookinfo/platform/kube/bookinfo.yaml
 ```
-7. Deploy Gateway and Virtual Service. Create a file called `bookinfo-custom-gateway.yaml` with contents:
+8. Deploy Gateway and Virtual Service. Create a file called `bookinfo-custom-gateway.yaml` with contents:
 ```
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
@@ -142,15 +142,15 @@ spec:
           number: 9080
 ```
 Note that we are specifying `istio: custom-ingressgateway` in the Gateway.
-8. Apply the Gateway and VirtualService resource
+9. Apply the Gateway and VirtualService resource
 ```
 kubectl apply -f bookinfo-custom-gateway.yaml -n bookinfo
 ```
-7. Get the EXTERNAL-IP of the `custom-ingressgateway` service in the `bookinfo` namespace
+10. Get the EXTERNAL-IP of the `custom-ingressgateway` service in the `bookinfo` namespace
 ```
 kubectl get svc -n bookinfo
 ```
-8. Visit http://EXTERNAL-IP/productpage
+11. Visit http://EXTERNAL-IP/productpage
 
 
 ## Creating an Ingress Gateway with private IP
