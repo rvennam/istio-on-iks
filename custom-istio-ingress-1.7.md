@@ -39,13 +39,13 @@ This means, all traffic coming into the mesh will flow thru this `istio-ingressg
 
 ### Additional Gateways
 
-![](images/istioingress-custom2.png)
-
 For the following reasons, some users choose to create additional ingress gateway deployments. 
 1. Separate traffic flows between certain workloads or namespaces
 2. Modify Ingress Gateway with customizations.
 3. Create an Ingress Gateway for private NLB traffic
 4. Control version updates independently of Managed Istio updates. 
+
+![](images/istioingress-custom2.png)
 
 ## Instructions
 These steps will create a new Istio ingress gateway deployment in a `bookinfo` namespace and then deploy the BookInfo sample application to the same namespace.
