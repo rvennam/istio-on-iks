@@ -142,14 +142,17 @@ spec:
           number: 9080
 ```
 Note that we are specifying `istio: custom-ingressgateway` in the Gateway.
+
 9. Apply the Gateway and VirtualService resource
 ```
 kubectl apply -f bookinfo-custom-gateway.yaml -n bookinfo
 ```
+
 10. Get the EXTERNAL-IP of the `custom-ingressgateway` service in the `bookinfo` namespace
 ```
 kubectl get svc -n bookinfo
 ```
+
 11. Visit http://EXTERNAL-IP/productpage
 
 
@@ -197,7 +200,8 @@ Note:
 - Running older version of a Gateway can expose you to security vulnerabilities. 
 
 ## Clean up
-1. Remove the `IstioOperator` resource
+
+Remove the `IstioOperator` resource
 ```
 kubectl apply -f ./custom-ingress-io.yaml
 ```
