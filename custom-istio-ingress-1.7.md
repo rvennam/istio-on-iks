@@ -243,10 +243,16 @@ spec:
 ```
 
 To specify zone affinity in a multi-zone cluster, refer to the annoations documented [here](https://cloud.ibm.com/docs/containers?topic=containers-loadbalancer). These annotations can be added to the `serviceAnnotations` field.
-[
+
+```
+        k8s:
+          serviceAnnotations:
+            service.kubernetes.io/ibm-load-balancer-cloud-provider-zone: "dal12"
+```
+
 ## Disable the default Ingress Gateway
 
-To disable the default `istio-ingressgateway` Ingress Gateway in the `istio-system` namespace created by Managed Istio, use the `managed-istio-custom` config map to set `istio-ingressgateway-public-1-enabled: false` as documented [here](https://cloud.ibm.com/docs/containers?topic=containers-istio#customize).
+To remove the default `istio-ingressgateway` Ingress Gateway in the `istio-system` namespace created by Managed Istio, use the `managed-istio-custom` config map to set `istio-ingressgateway-public-1-enabled: false` as documented [here](https://cloud.ibm.com/docs/containers?topic=containers-istio#customize).
 
 
 ## Clean up
