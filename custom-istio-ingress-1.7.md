@@ -244,7 +244,7 @@ spec:
 
 ```
 
-To specify zone affinity in a multi-zone cluster, refer to the annotations documented [here](https://cloud.ibm.com/docs/containers?topic=containers-loadbalancer). These annotations can be added to the `serviceAnnotations` field.
+For classic (non-VPC) clusters, to specify zone affinity in a multi-zone cluster, refer to the annotations documented [here](https://cloud.ibm.com/docs/containers?topic=containers-loadbalancer). These annotations can be added to the `serviceAnnotations` field.
 
 ```
         k8s:
