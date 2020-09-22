@@ -45,18 +45,17 @@ For the following reasons, some users choose to create additional ingress gatewa
 3. Create an Ingress Gateway for private NLB traffic
 4. Control version updates independently of Managed Istio updates. 
 
-![](images/istioingress-custom2.png)
+![](images/istioingress-custom3.png)
 
 ## Instructions
-These steps will create a new Istio ingress gateway deployment in a `bookinfo` namespace and then deploy the BookInfo sample application to the same namespace.
+These steps will create a new Istio ingress gateway deployment in a `custom-gateways` namespace.
 
 1. Enable Managed Istio 1.7
-2. Create a new namespace and enable automatic sidecar injection
-```
-kubectl create namespace bookinfo
-kubectl label namespace bookinfo  istio-injection=enabled
-```
-3. Create a file called `custom-ingress-io.yaml` with contents:
+2. Create a namespace for the custom gateways.
+   ```
+   kubectl create namespace custom-gateways
+   ```
+3. Create a file called `custom-ingress-iop.yaml` with contents:
 ```
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
@@ -73,19 +72,19 @@ spec:
       - name: custom-ingressgateway
         label: 
           istio: custom-ingressgateway
-        namespace: bookinfo
+        namespace: custom-gateways
         enabled: true
         k8s:
           serviceAnnotations:
             service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: public # Change to private for a private IP
 ```
-4. Apply the above `IstioOperator` CR to your cluster. The Managed Istio operator running in the `ibm-operators` namespace will read the resource and install the Gateway Deployment and Service into the `bookinfo` namespace. The `revision` field tells the operator to treat this `IstioOperator` as an additional Istio configuration.
+4. Apply the above `IstioOperator` CR to your cluster. The Managed Istio operator running in the `ibm-operators` namespace will read the resource and install the Gateway Deployment and Service into the `custom-gateways` namespace. The `revision` field tells the operator to treat this `IstioOperator` as an additional Istio configuration.
 ```
-kubectl apply -f ./custom-ingress-io.yaml
+kubectl apply -f ./custom-ingress-iop.yaml
 ```
-5. Check the deployments and services in `bookinfo` namespace. You should see the new gateway deployed. 
+5. Check the deployments and services in `custom-gateways` namespace. You should see the new gateway deployed. 
 ```
-kubectl get deploy,svc -n bookinfo
+kubectl get deploy,svc -n custom-gateways
 ```
 ```
 NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE
@@ -98,6 +97,11 @@ service/custom-ingressgateway   LoadBalancer   172.21.98.120   52.117.68.222   1
 
 ### BookInfo sample
 
+1. Create a new namespace and enable automatic sidecar injection
+```
+kubectl create namespace bookinfo
+kubectl label namespace bookinfo  istio-injection=enabled
+```
 1. Deploy the bookinfo sample.
 ```
 kubectl apply -n bookinfo -f https://raw.githubusercontent.com/istio/istio/release-1.7/samples/bookinfo/platform/kube/bookinfo.yaml
@@ -153,9 +157,9 @@ Note that we are specifying `istio: custom-ingressgateway` in the Gateway.
 kubectl apply -f bookinfo-custom-gateway.yaml -n bookinfo
 ```
 
-4. Get the EXTERNAL-IP of the `custom-ingressgateway` service in the `bookinfo` namespace
+4. Get the EXTERNAL-IP of the `custom-ingressgateway` service in the `custom-gateways` namespace
 ```
-kubectl get svc -n bookinfo
+kubectl get svc -n custom-gateways
 ```
 
 5. Visit http://EXTERNAL-IP/productpage
@@ -183,7 +187,7 @@ Note:
 
 ## Other recommended customizations
 
-Managed Istio Gateway is preconfigured with additional customization including minimum replicas, preStop lifecycle hooks for graceful shutdowns, improved affinity and edge node support. To achieve the same features for custom gateways, refer to the following IstioOperator.
+Managed Istio Gateway is pre-configured with additional customization including minimum replicas, preStop lifecycle hooks for graceful shutdowns, improved affinity and edge node support. To achieve the same features for custom gateways, refer to the following IstioOperator.
 
 ```
 apiVersion: install.istio.io/v1alpha1
@@ -201,7 +205,7 @@ spec:
       - name: custom-ingressgateway
         label:
           istio: custom-ingressgateway
-        namespace: bookinfo
+        namespace: custom-gateways
         enabled: true
         k8s:
           serviceAnnotations:
@@ -242,7 +246,7 @@ spec:
 
 ```
 
-To specify zone affinity in a multi-zone cluster, refer to the annoations documented [here](https://cloud.ibm.com/docs/containers?topic=containers-loadbalancer). These annotations can be added to the `serviceAnnotations` field.
+To specify zone affinity in a multi-zone cluster, refer to the annotations documented [here](https://cloud.ibm.com/docs/containers?topic=containers-loadbalancer). These annotations can be added to the `serviceAnnotations` field.
 
 ```
         k8s:
@@ -259,5 +263,5 @@ To remove the default `istio-ingressgateway` Ingress Gateway in the `istio-syste
 
 Remove the `IstioOperator` resource
 ```
-kubectl delete -f ./custom-ingress-io.yaml
+kubectl delete -f ./custom-ingress-iop.yaml
 ```
