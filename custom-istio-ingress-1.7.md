@@ -1,4 +1,4 @@
-# Deploying custom Istio Ingress Gateway on IKS Managed Istio
+# Deploying Custom Istio Ingress Gateways on IKS Managed Istio
 
 ### NOTE: 1.7 only
 
