@@ -4,7 +4,7 @@
 
 Managed Istio on IKS comes with a `istio-ingressgateway` deployment in the `istio-system` namespace which you can use for routing traffic coming in to your mesh. 
 ```
-~ 🏎  $ kubectl get deploy -n istio-system
+$ kubectl get deploy -n istio-system
 NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
 istio-egressgateway    2/2     2            2           138m
 istio-ingressgateway   2/2     2            2           138m
@@ -12,7 +12,7 @@ istiod                 2/2     2            2           138m
 ```
 It is exposed as a LoadBalancer service and is bound to a public IP address.
 ```
-~ 🏎  $ kubectl get svc -n istio-system istio-ingressgateway
+$ kubectl get svc -n istio-system istio-ingressgateway
 NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                                                                                                                      AGE
 istio-ingressgateway   LoadBalancer   172.21.191.13   169.63.158.243   15020:32189/TCP,80:32229/TCP,443:30727/TCP,15029:31567/TCP,15030:32151/TCP,15031:31829/TCP,15032:32446/TCP,31400:31871/TCP,15443:32171/TCP   139m
 ```
