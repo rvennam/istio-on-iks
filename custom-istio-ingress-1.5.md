@@ -1,6 +1,6 @@
 # Deploying your own Istio Ingress Gateway
 
-### NOTE: Istio 1.5, 1.6 and 1.7 only
+### NOTE: Istio 1.5 and 1.6 only
 
 Managed Istio on IKS comes with a `istio-ingressgateway` deployment in the `istio-system` namespace which you can use for routing traffic coming in to your mesh. 
 ```
