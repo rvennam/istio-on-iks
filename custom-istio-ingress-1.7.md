@@ -167,7 +167,7 @@ VLAN provides subnets that are used to assign IP addresses to your worker nodes 
 
 Note: If you configure the worker nodes to only be connected to [private VLANs only](https://cloud.ibm.com/docs/containers?topic=containers-clusters), a private IP from the private VLAN is automatically created for default istio ingress gateway. 
 
-To create a custom Istio ingress gateway and specify a private IP, set `service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: private` in `custom-ingress-io.yaml`.
+To create a custom Istio ingress gateway and specify a private IP type, set `service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: private` in `custom-ingress-io.yaml`.
 
 ## Control Istio Gateway updates and version
 
