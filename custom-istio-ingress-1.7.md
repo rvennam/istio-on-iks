@@ -94,6 +94,7 @@ NAME                            TYPE           CLUSTER-IP      EXTERNAL-IP     P
 service/custom-ingressgateway   LoadBalancer   172.21.98.120   52.117.68.222   15020:32656/TCP,80:30576/TCP,443:32689/TCP,15029:31885/TCP,15030:30198/TCP,15031:32637/TCP,15032:30869/TCP,31400:30310/TCP,15443:31698/TCP   4m53s
 
 ```
+6. Note the IP in the External-IP column. For VPC clusters, you will see a hostname. Register the IP address/hostname by creating a DNS subdomain: https://cloud.ibm.com/docs/containers?topic=containers-istio-mesh#istio_expose_bookinfo
 
 ### BookInfo sample
 
