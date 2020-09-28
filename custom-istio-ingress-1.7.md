@@ -197,7 +197,7 @@ metadata:
 spec:
   profile: empty
   hub: icr.io/ext/istio
-  # tag: 1.7.1 # Force the Gateway to a specific version 
+#  tag: 1.7.1 # Force the Gateway to a specific version 
   revision: custom-ingressgateway
   components:
     ingressGateways:
@@ -211,6 +211,9 @@ spec:
             service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: public
           hpaSpec:
             minReplicas: 2
+          tolerations:   ## schedule onto edge nodes
+          - key: dedicated
+            value: edge
           overlays:
             - kind: Deployment
               name: custom-ingressgateway
