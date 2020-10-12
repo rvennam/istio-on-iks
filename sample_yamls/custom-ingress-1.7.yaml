@@ -1,0 +1,58 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: ibm-operators
+  name: custom-ingressgateway-iop
+spec:
+  profile: empty
+  hub: icr.io/ext/istio
+#  tag: 1.7.1 # Force the Gateway to a specific version 
+  revision: custom-ingressgateway
+  components:
+    ingressGateways:
+      - name: custom-ingressgateway
+        label:
+          istio: custom-ingressgateway
+        namespace: custom-gateways
+        enabled: true
+        k8s:
+          serviceAnnotations:
+            service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: public
+          podAnnotations:
+            proxy.istio.io/config: '{"gatewayTopology" : { "numTrustedProxies": 2 } }'
+          hpaSpec:
+            minReplicas: 2
+          tolerations:   ## schedule onto edge nodes
+          - key: dedicated
+            value: edge
+          overlays:
+            - kind: Deployment
+              name: custom-ingressgateway
+              patches:
+                - path: spec.template.spec.containers.[name:istio-proxy].lifecycle
+                  value:
+                    preStop:
+                      exec:
+                        command: ["sleep", "25"]
+                - path: spec.template.spec.affinity
+                  value:
+                    podAntiAffinity:
+                      preferredDuringSchedulingIgnoredDuringExecution:
+                        - podAffinityTerm:
+                            labelSelector:
+                              matchExpressions:
+                                - key: app
+                                  operator: In
+                                  values:
+                                    - custom-ingressgateway
+                            topologyKey: kubernetes.io/hostname
+                          weight: 100
+                    nodeAffinity:
+                      preferredDuringSchedulingIgnoredDuringExecution:
+                        - preference:
+                            matchExpressions:
+                              - key: dedicated
+                                operator: In
+                                values:
+                                  - edge
+                          weight: 100
