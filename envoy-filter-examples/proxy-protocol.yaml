@@ -6,7 +6,7 @@ metadata:
 spec:
   workloadSelector:
     labels:
-      istio: ingressgateway
+      istio: ingressgateway # If you're using custom gateways, update this value
   configPatches:
   - applyTo: LISTENER
     patch:
