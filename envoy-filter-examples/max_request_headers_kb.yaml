@@ -7,15 +7,14 @@ spec:
   configPatches:
   - applyTo: NETWORK_FILTER # http connection manager is a filter in Envoy
     match:
-      context: GATEWAY
+      context: ANY
       listener:
         filterChain:
           filter:
-            name: "envoy.http_connection_manager"
+            name: "envoy.filters.network.http_connection_manager"
     patch:
       operation: MERGE
       value:
         typed_config:
-          "@type": "type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager"
-          xff_num_trusted_hops: 5
+          "@type": "type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager"
           max_request_headers_kb: 90
