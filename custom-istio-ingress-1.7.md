@@ -66,7 +66,6 @@ spec:
   profile: empty
   hub: icr.io/ext/istio
   # tag: 1.7.1 # Force the Gateway to a specific version
-  revision: custom-ingressgateway # IMPORTANT - Treat as a separate configuration and not overwrite the default Istio install
   components:
     ingressGateways:
       - name: custom-ingressgateway
@@ -78,7 +77,7 @@ spec:
           serviceAnnotations:
             service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: public # Change to private for a private IP
 ```
-4. Apply the above `IstioOperator` CR to your cluster. The Managed Istio operator running in the `ibm-operators` namespace will read the resource and install the Gateway Deployment and Service into the `custom-gateways` namespace. The `revision` field tells the operator to treat this `IstioOperator` as an additional Istio configuration.
+4. Apply the above `IstioOperator` CR to your cluster. The Managed Istio operator running in the `ibm-operators` namespace will read the resource and install the Gateway Deployment and Service into the `custom-gateways` namespace.
 ```
 kubectl apply -f ./custom-ingress-iop.yaml
 ```
@@ -198,7 +197,6 @@ spec:
   profile: empty
   hub: icr.io/ext/istio
 #  tag: 1.7.1 # Force the Gateway to a specific version 
-  revision: custom-ingressgateway
   components:
     ingressGateways:
       - name: custom-ingressgateway
