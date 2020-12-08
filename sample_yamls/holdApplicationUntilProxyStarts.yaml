@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sleep2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sleep2
+  template:
+    metadata:
+      labels:
+        app: sleep2
+      annotations:
+        proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+    spec:
+      serviceAccountName: sleep
+      containers:
+      - name: sleep2
+        image: governmentpaas/curl-ssl
+        command: ["/bin/sleep", "3650d"]
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - mountPath: /etc/sleep/tls
+          name: secret-volume
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: sleep-secret
+          optional: true
