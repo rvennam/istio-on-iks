@@ -1,6 +1,8 @@
 # Deploying Custom Istio Ingress Gateways on IKS Managed Istio
 
-### NOTE: 1.7 only
+### Istio 1.7 and 1.8 only. 
+
+#### NOTE: Before upgrading from 1.7 to 1.8, ensure that your IstioOperator does not have a `revision` field.
 
 Managed Istio on IKS comes with a `istio-ingressgateway` deployment in the `istio-system` namespace which you can use for routing traffic coming in to your mesh. 
 ```
