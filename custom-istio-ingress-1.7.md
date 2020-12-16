@@ -164,6 +164,47 @@ kubectl get svc -n custom-gateways
 ```
 6. Visit http://EXTERNAL-IP/productpage
 
+## Exposing BookInfo by using an IBM-provided subdomain with TLS
+
+1. Register the custom gateway IP address to create the host name and specify the `custom-gateway` namespace for the TLS secrets.
+```
+ibmcloud ks nlb-dns create classic --ip $EXTERNAL-IP --secret-namespace custom-gateways --cluster <cluster_name_or_id>
+```
+
+2. Wait until the secret is generated.
+```
+kubectl get secret -n custom-gateways
+
+mycluster-af23f234rwr3asdfasdf-002   kubernetes.io/tls                     2      15m
+```
+
+3. Modify the Gateway in the `bookinfo-custom-gateway.yaml` you created in the previous section. 
+```
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: bookinfo-gateway
+spec:
+  selector:
+    istio: custom-ingressgateway
+  servers:
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: mycluster-af23f234rwr3asdfasdf-002 # name of the secret
+    hosts:
+    - "*"
+```
+
+4. Apply the Gateway and VirtualService resource
+```
+kubectl apply -f bookinfo-custom-gateway.yaml -n bookinfo
+```
+
+5. Visit your subdomain. For example: https://mycluster-af23f234rwr3asdfasdf-002.us-south.containers.appdomain.cloud/productpage
 
 ## Creating an Ingress Gateway with private IP
 
