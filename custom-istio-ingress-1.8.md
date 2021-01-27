@@ -299,6 +299,28 @@ For classic (non-VPC) clusters, to specify zone affinity in a multi-zone cluster
 
 To remove the default `istio-ingressgateway` Ingress Gateway in the `istio-system` namespace created by Managed Istio, use the `managed-istio-custom` config map to set `istio-ingressgateway-public-1-enabled: false` as documented [here](https://cloud.ibm.com/docs/containers?topic=containers-istio#customize).
 
+## Egress Gateways
+
+Creating Egress gateways is simiar to ingress gateways.
+```
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: ibm-operators
+  name: custom-egressgateway-iop
+spec:
+  profile: empty
+  hub: icr.io/ext/istio
+  # tag: 1.8.1 # Force the Gateway to a specific version
+  components:
+    egressGateways:
+      - name: custom-egressgateway
+        label: 
+          istio: custom-egressgateway
+        namespace: custom-gateways
+        enabled: true
+
+```
 
 ## Clean up
 
