@@ -17,4 +17,4 @@ spec:
       value:
         typed_config:
           "@type": "type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager"
-          delayed_close_timeout: 0s
+          delayed_close_timeout: 30s
