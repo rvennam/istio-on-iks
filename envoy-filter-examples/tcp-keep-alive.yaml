@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: socketoptions 
+spec:
+  workloadSelector:
+    labels:
+      app: istio-ingressgateway
+  configPatches:
+  - applyTo: LISTENER
+    match:
+      context: ANY
+      listener:
+        portNumber: 15443
+    patch:
+      operation: MERGE
+      value:
+        socketOptions:
+        - description: "enable keep-alive"
+          level: 1
+          name: 9
+          intValue: 1
+          state: STATE_PREBIND
+        - description: "idle time before first keep-alive probe is sent"
+          level: 6
+          name: 4
+          intValue: 1
+          state: STATE_PREBIND
+        - description: "keep-alive interval"
+          level: 6
+          name: 5
+          intValue: 1
+          state: STATE_PREBIND
+        - description: "keep-alive probes count"
+          level: 6
+          name: 6
+          intValue: 1
+          state: STATE_PREBIND
